@@ -29,19 +29,21 @@ namespace AdvancedExampleProject
                     "ConnectionStrings:PeopleConnection"]);
                 opts.EnableSensitiveDataLogging(true);
             });
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 
         public void Configure(IApplicationBuilder app, DataContext context)
         {
             app.UseDeveloperExceptionPage();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllerRoute("controllers",
+                    "controllers/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             SeedData.SeedDatabase(context);
